@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 public aspect TestAspect {
     private static final Logger logger = LoggerFactory.getLogger(TestAspect.class);
 
-    @Before("execution(* com.job.zixun.controller.IndexController.*(..))")
+    @Before("execution(* IndexController.*(..))")
     public void beforeMethod(JoinPoint joinPoint){
         StringBuilder sb = new StringBuilder();
         for(Object arg : joinPoint.getArgs()){
@@ -19,7 +19,7 @@ public aspect TestAspect {
         logger.info("Before method: " + sb.toString());
     }
 
-    @After("execution(* com.job.zixun.controller.IndexController.*(..))")
+    @After("execution(* IndexController.*(..))")
     public void afterMethod(JoinPoint joinPoint){
         logger.info("After method: ");
     }

@@ -6,8 +6,6 @@ import com.job.zixun.service.ZixunService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,21 +21,29 @@ import java.util.Map;
  *
  */
 
-@Controller
+//@Controller
 public class IndexController {
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
     @Autowired
-    private ZixunService zixunser;
+    private ZixunService zixunService;
 
-    @RequestMapping(path = {"/", "/index"})
+//    @RequestMapping(path = {"/", "/index"})
+//    @ResponseBody
+//    public String index(HttpSession session) {
+//
+////        return "Hello world  " + session.getAttribute("msg");
+//        logger.info("lgooglgogloglo");
+//        return "Hello world  " + zixunService.say();
+//    }
+
+    @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String index(HttpSession session) {
-
-//        return "Hello world  " + session.getAttribute("msg");
-        logger.info("lgooglgogloglo");
-        return "Hello world  " + zixunser.say();
+        logger.info("Visit Index");
+        return "Hello NowCoder," + session.getAttribute("msg")
+                + "<br> Say:" + zixunService.say();
     }
 
     @RequestMapping(path = {"/profile/{groupId}/{userId}"})

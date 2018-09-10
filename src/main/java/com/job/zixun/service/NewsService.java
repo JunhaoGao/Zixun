@@ -8,16 +8,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ZixunService {
-
-    public String say() {
-        return "This is from ToutiaoService";
-    }
+public class NewsService {
 
     @Autowired
     private NewsDAO newsDAO;
 
-    public List<News> getLatestNews(int userId, int offset, int limit) {
-        return newsDAO.selectByUserIdAndOffset(userId, offset, limit);
+    public List<News> getLatestNews(int userid, int offset, int limit){
+        return newsDAO.selectByUserIdAndOffset(userid,offset,limit);
     }
 }
