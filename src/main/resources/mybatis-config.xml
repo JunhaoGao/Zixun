@@ -17,6 +17,10 @@
         <setting name="useGeneratedKeys" value="true"/>
     </settings>
 
+    <mappers>
+        <mapper resource="com.job.zixun.dao/NewsDAO.xml"/>
+    </mappers>
+
     <!-- Continue going here -->
 
 </configuration>
