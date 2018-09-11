@@ -13,9 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -46,28 +44,30 @@ public class IndexController {
                 + "<br> Say:" + zixunService.say();
     }
 
-    @RequestMapping(path = {"/profile/{groupId}/{userId}"})
+    @RequestMapping(value = {"/profile/{groupId}/{userId}"})
     @ResponseBody
     public String profile(@PathVariable("groupId") String groupId,
                           @PathVariable("userId") int userId,
-                          @RequestParam(value = "key", defaultValue = "learning") String key,
-                          @RequestParam(value = "type", defaultValue = "123") int type) {
-        return String.format("{%s},{%d},{%s},{%d}", groupId, userId, type, key);
+                          @RequestParam(value = "type", defaultValue = "1") int type,
+                          @RequestParam(value = "key", defaultValue = "nowcoder") String key) {
+        return String.format("GID{%s},UID{%d},TYPE{%d},KEY{%s}", groupId, userId, type, key);
     }
 
-    @RequestMapping(path = {"/vm"})
+    @RequestMapping(value = {"/vm"})
     public String news(Model model) {
-        model.addAttribute("value1", "vavava");
+        model.addAttribute("value1", "vv1");
+        List<String> colors = Arrays.asList(new String[]{"RED", "GREEN", "BLUE"});
 
-        Map<String, Object> m = new HashMap<String, Object>();
-        m.put("name", "姓名");
-        m.put("age", 18);
-        m.put("sex", "男");
-        model.addAttribute("map", m);
+        Map<String, String> map = new HashMap<String, String>();
+        for (int i = 0; i < 4; ++i) {
+            map.put(String.valueOf(i), String.valueOf(i * i));
+        }
 
-        User u = new User("Jim");
-        model.addAttribute("user", u);
-        return "/news";
+        model.addAttribute("colors", colors);
+        model.addAttribute("map", map);
+        model.addAttribute("user", new User("Jim"));
+
+        return "news";
     }
 
     @RequestMapping(path = {"/request"})
@@ -76,17 +76,27 @@ public class IndexController {
                           HttpServletResponse response,
                           HttpSession session) {
         StringBuilder sb = new StringBuilder();
-        Enumeration<String> headerName = request.getHeaderNames();
-        while (headerName.hasMoreElements()) {
-            String name = headerName.nextElement();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
             sb.append(name + ":" + request.getHeader(name) + "<br>");
         }
+
         for (Cookie cookie : request.getCookies()) {
-            sb.append("Coockie:");
-            sb.append(cookie.getName() + cookie.getValue());
+            sb.append("Cookie:");
+            sb.append(cookie.getName());
+            sb.append(":");
+            sb.append(cookie.getValue());
             sb.append("<br>");
         }
+
+        sb.append("getMethod:" + request.getMethod() + "<br>");
+        sb.append("getPathInfo:" + request.getPathInfo() + "<br>");
+        sb.append("getQueryString:" + request.getQueryString() + "<br>");
+        sb.append("getRequestURI:" + request.getRequestURI() + "<br>");
+
         return sb.toString();
+
     }
 
     @RequestMapping(path = {"/response"})
@@ -97,8 +107,6 @@ public class IndexController {
                            HttpServletResponse response) {
         response.addCookie(new Cookie(key, value));
         response.addHeader(key, value);
-
-
         return "CoockieId:" + coockieId;
     }
 
@@ -111,27 +119,31 @@ public class IndexController {
 //        return red;
 //    }
 //
-    @RequestMapping(path = {"/redirect/{code1}"})
-    public String redirect(@PathVariable("code1") int code,
+    @RequestMapping("/redirect/{code}")
+    public String redirect(@PathVariable("code") int code,
                            HttpSession session) {
-        session.setAttribute("msg", "Jump from redirect");
+        /*
+        RedirectView red = new RedirectView("/", true);
+        if (code == 301) {
+            red.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+        }
+        return red;*/
+        session.setAttribute("msg", "Jump from redirect.");
         return "redirect:/";
     }
 
-    @RequestMapping(path = {"/admin"})
+    @RequestMapping("/admin")
     @ResponseBody
-    public String admin(@RequestParam(value = "key",required = false) String key){
-        if ("admin1".equals(key)){
-            return "Hello Admin";
+    public String admin(@RequestParam(value = "key", required = false) String key) {
+        if ("admin".equals(key)) {
+            return "hello admin";
         }
-
-
-        throw new IllegalArgumentException("Key Error");
+        throw new IllegalArgumentException("Key 错误");
     }
 
-    @ExceptionHandler
+    @ExceptionHandler()
     @ResponseBody
-    public String error(Exception e){
-        return "error " + e.getMessage();
+    public String error(Exception e) {
+        return "error:" + e.getMessage();
     }
 }

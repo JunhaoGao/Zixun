@@ -15,4 +15,7 @@ public class ViewObject {
     public Object get(String key) {
         return objs.get(key);
     }
+    public User getUser(){ return (User) objs.get("user");}
+//    public User getUser(){ return (User) objs.get("u");}
+
 }

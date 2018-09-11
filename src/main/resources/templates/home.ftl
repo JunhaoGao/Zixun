@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>读《Web 全栈工程师的自我修养》 - web开发的愚人之旅 - 牛客网</title>
+    <title>我的头条资讯网站</title>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta name="keywords" content="读《Web 全栈工程师的自我修养》">
-    <meta name="description" content="阅读影浅分享的读《Web 全栈工程师的自我修养》，就在牛客网。">
+    <meta name="keywords" content="我的头条资讯网站">
+    <meta name="description" content="我的头条资讯网站">
 
     <link rel="stylesheet" type="text/css" href="/styles/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/styles/font-awesome.min.css">
@@ -29,7 +29,7 @@
                   <span class="icon-bar"></span>
                 </button>
 
-                <a href="http://nowcoder.com/" class="navbar-brand logo">
+                <a href="/" class="navbar-brand logo">
                   <h1>头条资讯</h1>
                   <h3>你关心的才是头条</h3>
                 </a>
@@ -109,46 +109,49 @@
         <div class="container" id="daily">
             <div class="jscroll-inner">
                 <div class="daily">
-
-                    #set($cur_date = '')
-                    #foreach($vo in $vos)
-                    #if ($cur_date != $date.format('yyyy-MM-dd', $vo.news.createdDate))
-                        #if ($foreach.index > 0)
-                            </div> ## 上一个要收尾
-                        #end
-                        #set($cur_date = $date.format('yyyy-MM-dd', $vo.news.createdDate))
-                    <h3 class="date">
-                        <i class="fa icon-calendar"></i>
-                        <span>头条资讯 &nbsp; $date.format('yyyy-MM-dd', $vo.news.createdDate)</span>
-                    </h3>
-
+                    <#--#set($cur_date = '')-->
+                    <#assign cur_date = '' />
+                    <#list vos as item>
+                        <#--<#list item.obj?keys as itemKey>-->
+                            <#--${item.obj[itemKey]}-->
+                        <#--</#list>-->
+                    <#if (cur_date != item.news.createdDate?string("yyyy-MM-dd"))>
+                        <#if (item_index>0)>
+                            </div>
+                        </#if>
+                        <#assign cur_date=item.news.createdDate?string("yyyy-MM-dd")>
+                        <#--${item.news.createdDate?string("yyyy-MM-dd")}-->
+                        <h3 class="date">
+                            <i class="fa icon-calendar"></i>
+                            <span>头条资讯 &nbsp; ${item.news.createdDate?string("yyyy-MM-dd")}</span>
+                        </h3>
                     <div class="posts">
-                    #end
+                    </#if>
                         <div class="post">
                             <div class="votebar">
-                                <button class="click-like up" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">$!{vo.news.likeCount}</span></button>
+                                <button class="click-like up" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">${item.news.likeCount}</span></button>
                                 <button class="click-dislike down" aria-pressed="true" title="反对"><i class="vote-arrow"></i>
                                 </button>
                             </div>
                             <div class="content" data-url="http://nowcoder.com/posts/5l3hjr">
                                 <div >
-                                    <img class="content-img" src="$!{vo.news.image}" alt="">
+                                    <img class="content-img" src="${item.news.image}" alt="">
                                 </div>
                                 <div class="content-main">
                                     <h3 class="title">
-                                        <a target="_blank" rel="external nofollow" href="$!{vo.news.link}">$!{vo.news.title}</a>
+                                        <a target="_blank" rel="external nofollow" href="${item.news.link}">${item.news.title}</a>
                                     </h3>
                                     <div class="meta">
-                                        $!{vo.news.link}
+                                        ${item.news.link}
                                         <span>
-                                            <i class="fa icon-comment"></i> $!{vo.news.commentCount}
-                                        </span>
+                                       <i class="fa icon-comment"></i> ${item.news.commentCount}
+                                      </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="user-info">
                                 <div class="user-avatar">
-                                    <a href="/user/$!{vo.user.id}/"><img width="32" class="img-circle" src="$!{vo.user.headUrl}"></a>
+                                    <a href="/user/${(item.user.id)!""}/"><img width="32" class="img-circle" src="${(item.user.headUrl)!""}"></a>
                                 </div>
 
                                 <!--
@@ -163,19 +166,79 @@
                                 -->
                             </div>
 
-                            <div class="subject-name">来自 <a href="/user/$!{vo.user.id}/">$!{vo.user.name}</a></div>
+                            <div class="subject-name">来自 <a href="/user/${(item.user.id)!""}/">${(item.user.name)!""}</a></div>
                         </div>
-
-                        <!--
-                        <div class="alert alert-warning subscribe-banner" role="alert">
-                          《头条八卦》，每日 Top 3 通过邮件发送给你。      <a class="btn btn-info btn-sm pull-right" href="http://nowcoder.com/account/settings">立即订阅</a>
+                    <#if !(item_has_next)>
                         </div>
-                        -->
-                    #if ($foreach.count == $vos.size()) ##最后有个元素要收尾
-                    </div>
-                    #end
+                    </#if>
 
-                    #end
+                    </#list>
+
+                    <#--#foreach($vo in $vos)-->
+                    <#--&lt;#&ndash;#if ($cur_date != $date.format('yyyy-MM-dd', $vo.news.createdDate))&ndash;&gt;-->
+                        <#--&lt;#&ndash;#if ($foreach.index > 0)&ndash;&gt;-->
+                            <#--&lt;#&ndash;</div> ## 上一个要收尾&ndash;&gt;-->
+                        <#--&lt;#&ndash;#end&ndash;&gt;-->
+                        <#--&lt;#&ndash;#set($cur_date = $date.format('yyyy-MM-dd', $vo.news.createdDate))&ndash;&gt;-->
+                    <#--&lt;#&ndash;<h3 class="date">&ndash;&gt;-->
+                        <#--&lt;#&ndash;<i class="fa icon-calendar"></i>&ndash;&gt;-->
+                        <#--&lt;#&ndash;<span>头条资讯 &nbsp; $date.format('yyyy-MM-dd', $vo.news.createdDate)</span>&ndash;&gt;-->
+                    <#--&lt;#&ndash;</h3>&ndash;&gt;-->
+
+                    <#--&lt;#&ndash;<div class="posts">&ndash;&gt;-->
+                    <#--&lt;#&ndash;#end&ndash;&gt;-->
+                        <#--<div class="post">-->
+                            <#--<div class="votebar">-->
+                                <#--<button class="click-like up" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">$!{vo.news.likeCount}</span></button>-->
+                                <#--<button class="click-dislike down" aria-pressed="true" title="反对"><i class="vote-arrow"></i>-->
+                                <#--</button>-->
+                            <#--</div>-->
+                            <#--<div class="content" data-url="http://nowcoder.com/posts/5l3hjr">-->
+                                <#--<div >-->
+                                    <#--<img class="content-img" src="$!{vo.news.image}" alt="">-->
+                                <#--</div>-->
+                                <#--<div class="content-main">-->
+                                    <#--<h3 class="title">-->
+                                        <#--<a target="_blank" rel="external nofollow" href="$!{vo.news.link}">$!{vo.news.title}</a>-->
+                                    <#--</h3>-->
+                                    <#--<div class="meta">-->
+                                        <#--$!{vo.news.link}-->
+                                        <#--<span>-->
+                                            <#--<i class="fa icon-comment"></i> $!{vo.news.commentCount}-->
+                                        <#--</span>-->
+                                    <#--</div>-->
+                                <#--</div>-->
+                            <#--</div>-->
+                            <#--<div class="user-info">-->
+                                <#--<div class="user-avatar">-->
+                                    <#--<a href="/user/$!{vo.user.id}/"><img width="32" class="img-circle" src="$!{vo.user.headUrl}"></a>-->
+                                <#--</div>-->
+
+                                <#--<!---->
+                                <#--<div class="info">-->
+                                    <#--<h5>分享者</h5>-->
+
+                                    <#--<a href="http://nowcoder.com/u/251205"><img width="48" class="img-circle" src="http://images.nowcoder.com/images/20141231/622873_1420036789276_622873_1420036771761_%E8%98%91%E8%8F%87.jpg@0e_200w_200h_0c_1i_1o_90Q_1x" alt="Thumb"></a>-->
+
+                                    <#--<h4 class="m-b-xs">冰燕</h4>-->
+                                    <#--<a class="btn btn-default btn-xs" href="http://nowcoder.com/signin"><i class="fa icon-eye"></i> 关注TA</a>-->
+                                <#--</div>-->
+                                <#--&ndash;&gt;-->
+                            <#--</div>-->
+
+                            <#--<div class="subject-name">来自 <a href="/user/$!{vo.user.id}/">$!{vo.user.name}</a></div>-->
+                        <#--</div>-->
+
+                        <#--<!---->
+                        <#--<div class="alert alert-warning subscribe-banner" role="alert">-->
+                          <#--《头条八卦》，每日 Top 3 通过邮件发送给你。      <a class="btn btn-info btn-sm pull-right" href="http://nowcoder.com/account/settings">立即订阅</a>-->
+                        <#--</div>-->
+                        <#--&ndash;&gt;-->
+                    <#--#if ($foreach.count == $vos.size()) ##最后有个元素要收尾-->
+                    <#--</div>-->
+                    <#--#end-->
+
+                    <#--#end-->
 
 
                 </div>

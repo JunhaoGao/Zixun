@@ -24,6 +24,7 @@ public class UserService {
     public User getUser(int id){
         return userDAO.selectById(id);
     }
+
     public Map<String,Object> register(String username, String password){
         Map<String,Object> map = new HashMap<>();
         if(StringUtils.isBlank(username)){

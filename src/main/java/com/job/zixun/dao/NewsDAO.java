@@ -10,6 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface NewsDAO {
+
     String TABLE_NAME = "news";
 
     String INSERT_FIELDS = " title, link, image, like_count, comment_count,created_date,user_id ";

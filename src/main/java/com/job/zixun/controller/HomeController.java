@@ -1,6 +1,7 @@
 package com.job.zixun.controller;
 
 import com.job.zixun.model.News;
+import com.job.zixun.model.User;
 import com.job.zixun.model.ViewObject;
 import com.job.zixun.service.NewsService;
 import com.job.zixun.service.UserService;
@@ -39,6 +40,7 @@ public class HomeController {
         List<News> newsList = newsService.getLatestNews(userId, offset, limit);
 
         List<ViewObject> vos = new ArrayList<>();
+        User user =null;
         for (News news : newsList) {
             ViewObject vo = new ViewObject();
             vo.set("news", news);

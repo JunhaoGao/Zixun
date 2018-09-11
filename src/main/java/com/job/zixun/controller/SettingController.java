@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class SettingController {
-
-    @RequestMapping(path={"/setting"})
+    @RequestMapping("/setting")
     @ResponseBody
-    public String setting(){
-        return "Setting is OK";
+    public String setting() {
+        return "Setting:OK";
     }
 }
+
