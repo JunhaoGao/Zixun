@@ -23,9 +23,10 @@ public class HomeController {
 
     @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String index(@RequestParam(value = "userId", defaultValue = "0") int userId,
+                        @RequestParam(value = "pop", defaultValue = "0") int pop,
                         Model model) {
         model.addAttribute("vos", getNews(0, 0, 10));
-
+        model.addAttribute("pop",pop);
         return "home";
     }
 

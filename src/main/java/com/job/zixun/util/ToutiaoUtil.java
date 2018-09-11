@@ -1,18 +1,14 @@
 package com.job.zixun.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.job.zixun.controller.LoginController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.MessageDigest;
 import java.util.Map;
 
-/**
- * Created by nowcoder on 2016/7/3.
- */
-public class ZixunUtil {
-    private static final Logger logger = LoggerFactory.getLogger(ZixunUtil.class);
+public class ToutiaoUtil {
+    private static final Logger logger = LoggerFactory.getLogger(ToutiaoUtil.class);
 
     public static String getJSONString(int code) {
         JSONObject json = new JSONObject();

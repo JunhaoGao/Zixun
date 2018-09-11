@@ -1,8 +1,10 @@
 package com.job.zixun;
 
 
+import com.job.zixun.dao.LoginTicketDAO;
 import com.job.zixun.dao.NewsDAO;
 import com.job.zixun.dao.UserDAO;
+import com.job.zixun.model.LoginTicket;
 import com.job.zixun.model.News;
 import com.job.zixun.model.User;
 import org.junit.Assert;
@@ -26,6 +28,9 @@ public class InitDatabaseTests {
 
     @Autowired
     NewsDAO newsDAO;
+
+    @Autowired
+    LoginTicketDAO loginTicketDAO;
 
 
     @Test
@@ -54,6 +59,19 @@ public class InitDatabaseTests {
 
             user.setPassword("newpassword");
             userDAO.updatePassword(user);
+
+            user.setPassword("newpassword");
+            userDAO.updatePassword(user);
+
+            LoginTicket ticket = new LoginTicket();
+            ticket.setStatus(0);
+            ticket.setUserId(i+1);
+            ticket.setExpired(date);
+            ticket.setTicket(String.format("TICKET%d", i+1));
+            loginTicketDAO.addTicket(ticket);
+
+            loginTicketDAO.updateStatus(ticket.getTicket(), 2);
+
         }
 
         Assert.assertEquals("newpassword", userDAO.selectById(1).getPassword());
