@@ -24,7 +24,7 @@ public interface NewsDAO {
     int addNews(News news);
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where id=#{id}"})
-    News selectById(int id);
+    News getById(int id);
 
     List<News> selectByUserIdAndOffset(@Param("userId") int userId, @Param("offset") int offset,
                                        @Param("limit") int limit);
