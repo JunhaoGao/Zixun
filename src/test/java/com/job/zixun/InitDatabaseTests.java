@@ -1,12 +1,11 @@
 package com.job.zixun;
 
 
+import com.job.zixun.dao.CommentDAO;
 import com.job.zixun.dao.LoginTicketDAO;
 import com.job.zixun.dao.NewsDAO;
 import com.job.zixun.dao.UserDAO;
-import com.job.zixun.model.LoginTicket;
-import com.job.zixun.model.News;
-import com.job.zixun.model.User;
+import com.job.zixun.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,33 +31,43 @@ public class InitDatabaseTests {
     @Autowired
     LoginTicketDAO loginTicketDAO;
 
+    @Autowired
+    CommentDAO commentDAO;
 
     @Test
     public void initData(){
         Random random = new Random();
-        News news = new News();
-        for(int i =0;i<10;i++){
+        for (int i = 0; i < 11; ++i) {
             User user = new User();
-            user.setHeadUrl(String.format("http://images.nowcoder.com/head/%dt.png", random.nextInt()));
-            user.setName(String.format("USER%d",i));
+            user.setHeadUrl(String.format("http://images.nowcoder.com/head/%dt.png", random.nextInt(1000)));
+            user.setName(String.format("USER%d", i));
             user.setPassword("");
             user.setSalt("");
             userDAO.addUser(user);
 
+            News news = new News();
             news.setCommentCount(i);
             Date date = new Date();
-            date.setTime(date.getTime() + 1000 * 3600 * 5 * i);
+            date.setTime(date.getTime() + 1000*3600*5*i);
             news.setCreatedDate(date);
             news.setImage(String.format("http://images.nowcoder.com/head/%dm.png", random.nextInt(1000)));
-            news.setLikeCount(i + 1);
-            news.setLink(String.format("http://www.nowcoder.com/link/{%d}.html", i));
-            news.setTitle(String.format("Title {%d} ", i));
+            news.setLikeCount(i+1);
             news.setUserId(i+1);
+            news.setTitle(String.format("TITLE{%d}", i));
+            news.setLink(String.format("http://www.nowcoder.com/%d.html", i));
             newsDAO.addNews(news);
-            System.out.println(news.getId());
 
-            user.setPassword("newpassword");
-            userDAO.updatePassword(user);
+            // 给每个资讯插入3个评论
+            for(int j = 0; j < 3; ++j) {
+                Comment comment = new Comment();
+                comment.setUserId(i+1);
+                comment.setCreatedDate(new Date());
+                comment.setStatus(0);
+                comment.setContent("这里是一个评论啊！" + String.valueOf(j));
+                comment.setEntityId(news.getId());
+                comment.setEntityType(EntityType.ENTITY_NEWS);
+                commentDAO.addComment(comment);
+            }
 
             user.setPassword("newpassword");
             userDAO.updatePassword(user);
@@ -78,5 +87,9 @@ public class InitDatabaseTests {
         userDAO.deleteById(1);
         Assert.assertNull(userDAO.selectById(1));
 
+        Assert.assertEquals(1, loginTicketDAO.selectByTicket("TICKET1").getUserId());
+        Assert.assertEquals(2, loginTicketDAO.selectByTicket("TICKET1").getStatus());
+
+        Assert.assertNotNull(commentDAO.selectByEntity(1, EntityType.ENTITY_NEWS).get(0));
     }
 }
