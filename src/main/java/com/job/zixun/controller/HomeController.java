@@ -1,8 +1,7 @@
 package com.job.zixun.controller;
 
-import com.job.zixun.model.News;
-import com.job.zixun.model.User;
-import com.job.zixun.model.ViewObject;
+import com.job.zixun.model.*;
+import com.job.zixun.service.LikeService;
 import com.job.zixun.service.NewsService;
 import com.job.zixun.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,13 @@ public class HomeController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    LikeService likeService;
+
+    @Autowired
+    HostHolder hostHolder;
+
 
     @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String index(@RequestParam(value = "userId", defaultValue = "0") int userId,
@@ -39,13 +45,18 @@ public class HomeController {
 
     private List<ViewObject> getNews(int userId, int offset, int limit) {
         List<News> newsList = newsService.getLatestNews(userId, offset, limit);
-
+        int localUserId = hostHolder.getUser() != null ? hostHolder.getUser().getId() : 0;
         List<ViewObject> vos = new ArrayList<>();
         User user =null;
         for (News news : newsList) {
             ViewObject vo = new ViewObject();
             vo.set("news", news);
             vo.set("user", userService.getUser(news.getUserId()));
+            if (localUserId != 0) {
+                vo.set("like", likeService.getLikeStatus(localUserId, EntityType.ENTITY_NEWS, news.getId()));
+            } else {
+                vo.set("like", 0);
+            }
             vos.add(vo);
         }
         return vos;

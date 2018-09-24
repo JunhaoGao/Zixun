@@ -1,10 +1,7 @@
 package com.job.zixun.controller;
 
 import com.job.zixun.model.*;
-import com.job.zixun.service.CommentService;
-import com.job.zixun.service.NewsService;
-import com.job.zixun.service.QiniuService;
-import com.job.zixun.service.UserService;
+import com.job.zixun.service.*;
 import com.job.zixun.util.ToutiaoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +38,9 @@ public class NewsController {
     @Autowired
     HostHolder hostHolder;
 
+    @Autowired
+    LikeService likeService;
+
 
     @RequestMapping(path = {"/image"}, method = {RequestMethod.GET})
     @ResponseBody
@@ -60,6 +60,13 @@ public class NewsController {
     public String detail(@PathVariable("newsId") int newsId, Model model){
         News news = newsService.getById(newsId);
         if(news!=null){
+            int localUserId = hostHolder.getUser() != null ? hostHolder.getUser().getId() : 0;
+            if (localUserId != 0) {
+                model.addAttribute("like", likeService.getLikeStatus(localUserId, EntityType.ENTITY_NEWS, news.getId()));
+            } else {
+                model.addAttribute("like", 0);
+            }
+            //Comment
             List<Comment> comments = commentService.getCommentsByEntity(news.getId(), EntityType.ENTITY_NEWS);
             List<ViewObject> commentVOs = new ArrayList<ViewObject>();
             for (Comment comment : comments) {
