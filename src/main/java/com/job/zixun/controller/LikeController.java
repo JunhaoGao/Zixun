@@ -1,5 +1,8 @@
 package com.job.zixun.controller;
 
+import com.job.zixun.async.EventModel;
+import com.job.zixun.async.EventProducer;
+import com.job.zixun.async.EventType;
 import com.job.zixun.model.EntityType;
 import com.job.zixun.model.HostHolder;
 import com.job.zixun.model.News;
@@ -29,12 +32,21 @@ public class LikeController {
     @Autowired
     NewsService newsService;
 
+    @Autowired
+    EventProducer eventProducer;
+
     @RequestMapping(path = {"/like"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String like(@RequestParam("newsId") int newsId) {
         User user = hostHolder.getUser();
         long likeCount = likeService.like(user.getId(), EntityType.ENTITY_NEWS, newsId);
+        News news = newsService.getById(newsId);
         newsService.updateLikeCount(newsId, (int) likeCount);
+
+        eventProducer.fireEvent(new EventModel(EventType.LIKE)
+                .setActorId(hostHolder.getUser().getId()).setEntityId(newsId)
+                .setEntityType(EntityType.ENTITY_NEWS).setEntityOwnerId(news.getUserId()));
+
         return ToutiaoUtil.getJSONString(0, String.valueOf(likeCount));
     }
 

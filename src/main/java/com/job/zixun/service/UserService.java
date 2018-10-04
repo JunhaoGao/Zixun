@@ -52,6 +52,9 @@ public class UserService {
         userDAO.addUser(user);
 
         //log in
+        map.put("userId", user.getId());
+        String ticket = addLoginTicket(user.getId());
+        map.put("ticket", ticket);
 
         return map;
     }
@@ -78,6 +81,8 @@ public class UserService {
             map.put("msgpwd", "密码不正确");
             return map;
         }
+
+        map.put("userId", user.getId());
 
         String ticket = addLoginTicket(user.getId());
         map.put("ticket", ticket);

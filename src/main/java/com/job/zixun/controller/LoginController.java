@@ -1,6 +1,9 @@
 package com.job.zixun.controller;
 
 
+import com.job.zixun.async.EventModel;
+import com.job.zixun.async.EventProducer;
+import com.job.zixun.async.EventType;
 import com.job.zixun.service.UserService;
 import com.job.zixun.util.ToutiaoUtil;
 import org.slf4j.Logger;
@@ -21,6 +24,9 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    EventProducer eventProducer;
 
     @RequestMapping(path = {"/reg/"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
@@ -63,14 +69,19 @@ public class LoginController {
                     cookie.setMaxAge(3600 * 24 * 5);
                 }
                 response.addCookie(cookie);
+
+                eventProducer.fireEvent(new
+                        EventModel(EventType.LOGIN).setActorId((int) map.get("userId"))
+                        .setExt("username", "牛客").setExt("to", "zjuyxy@qq.com"));
+
                 return ToutiaoUtil.getJSONString(0, "登录成功");
             } else {
                 return ToutiaoUtil.getJSONString(1, map);
             }
 
         } catch (Exception e) {
-            logger.error("注册异常" + e.getMessage());
-            return ToutiaoUtil.getJSONString(1, "注册异常");
+            logger.error("登陆异常" + e.getMessage());
+            return ToutiaoUtil.getJSONString(1, "登陆异常");
         }
     }
 
